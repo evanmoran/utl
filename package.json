@@ -14,7 +14,8 @@
   ],
   "author": "Evan Moran <evan@evanmoran.com>",
   "dependencies": {
-    "underscore":"latest"
+    "underscore":"latest",
+    "request":"latest"
   },
   "scripts": {
     "test": "cake test"

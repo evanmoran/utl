@@ -1,4 +1,7 @@
-var _ = require('underscore')
+var _ = require('underscore'),
+fs = require('fs'),
+request = require('request')
+
 var utl;
 module.exports = utl = {}
 
@@ -112,21 +115,42 @@ utl.ls = function(paths, options, cb){
 // };
 
 // download: download the url to string
-utl.download = function(url, cb){
-  var options = require('url').parse(url),
-  httpx = url.startsWith(url, 'https:') ? https : http,
-  data = "",
-  req = httpx.request(options, function(res){
-    res.setEncoding("utf8")
-    res.on("data", function(chunk){
-      return data += chunk;
-    })
-    return res.on("end", function(){
-      return cb(null, data, url);
-    })
-  })
-  return req.end()
+// utl.download = function(url, cb){
+//   var options = require('url').parse(url),
+//   httpx = url.startsWith(url, 'https:') ? https : http,
+//   data = "",
+//   req = httpx.request(options, function(res){
+//     res.setEncoding("utf8")
+//     res.on("data", function(chunk){
+//       return data += chunk;
+//     })
+//     return res.on("end", function(){
+//       return cb(null, data, url);
+//     })
+//   })
+//   return req.end()
+// };
+
+utl.download = function(url, fileOutPath, cb){
+  request.head(url, function(err, res, body){
+    // console.log('content-type:', res.headers['content-type']);
+    // console.log('content-length:', res.headers['content-length']);
+    var req = request(url)
+    data = ""
+    if(typeof options.filePath == 'string')
+      req.on('end', cb).pipe(fs.createWriteStream(options.filePath))
+    else {
+      res.setEncoding("utf8")
+      res.on("data", function(chunk){
+        return data += chunk;
+      })
+      res.on("end", function(){
+        cb(null, data, url);
+      })
+    }
+  });
 };
+
 
 // load: load a file into a string
 utl.load = function(filepath, cb){
@@ -137,6 +161,14 @@ utl.loadSync = function(filePath){
   return fs.readFileSync(filePath, 'utf8')
 };
 
+// save: save a file into a string
+utl.save = function(filepath, data, cb){
+  return fs.writeFile(filepath, data, cb)
+};
+
+utl.saveSync = function(filePath, data){
+  return fs.writeFileSync(filePath, data)
+};
 
 var code = {
   reset: '\u001b[0m',
